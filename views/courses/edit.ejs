@@ -1,0 +1,99 @@
+<% layout('/layouts/boilerplate.ejs') %>
+    <div class="row">
+        <h1 class="text-center">Edit Course</h1>
+        <div class="col-6 offset-3">
+            <form action="/courses/<%= course._id %>?_method=PUT" method="POST" class="validated-form" novalidate>
+                <div class="mb-3">
+                    <label class="form-label" for="title">Course Title</label>
+                    <input class="form-control" type="text" name="course[title]" id="title" value="<%= course.title %>"
+                        required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="instructor">Course Instructor</label>
+                    <input class="form-control" type="text" name="course[instructor]" id="instructor"
+                        value="<%= course.instructor %>" required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="image">Image Url</label>
+                    <input class="form-control" type="text" name="course[image]" id="image" value="<%= course.image %>"
+                        required>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="price">Course Price</label>
+                    <div class="input-group">
+                        <span class="input-group-text" id="price-label">$</span>
+                        <input type="text" class="form-control" id="price" placeholder="0.00" aria-label="price"
+                            aria-describedby="price-label" name="course[price]" value="<%= course.price %>" required>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Platform</label>
+                    <div class="mb-2">
+                        <label for="platform-1" class="form-label">Platform 1</label>
+                        <input type="text" class="form-control" id="platform-1" name="course[platform][]"
+                            placeholder="Enter Platform" value="<%= course.platform[0] %>">
+                    </div>
+                    <div class="mb-2">
+                        <label for="platform-2" class="form-label">Platform 2</label>
+                        <input type="text" class="form-control" id="platform-2" name="course[platform][]"
+                            placeholder="Enter Platform" value="<%= course.platform[1] %>">
+                    </div>
+                    <div class="mb-2">
+                        <label for="platform-3" class="form-label">Platform 3</label>
+                        <input type="text" class="form-control" id="platform-3" name="course[platform][]"
+                            placeholder="Enter Platform" value="<%= course.platform[2] %>">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Category</label>
+                    <div class="mb-2">
+                        <label for="category-1" class="form-label">Category 1</label>
+                        <input type="text" class="form-control" id="category-1" name="course[category][]"
+                            placeholder="Enter Category" value="<%= course.category[0] %>">
+                    </div>
+                    <div class="mb-2">
+                        <label for="category-2" class="form-label">Category 2</label>
+                        <input type="text" class="form-control" id="category-2" name="course[category][]"
+                            placeholder="Enter Category" value="<%= course.category[1] %>">
+                    </div>
+                    <div class="mb-2">
+                        <label for="category-3" class="form-label">Category 3</label>
+                        <input type="text" class="form-control" id="category-3" name="course[category][]"
+                            placeholder="Enter Category" value="<%= course.category[2] %>">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="description">Course Description</label>
+                    <textarea class="form-control" type="text" name="course[description]" id="description"
+                        required><%= course.description %></textarea>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <button class="btn btn-info">Update Course</button>
+                </div>
+
+            </form>
+            <a href="/courses/<%= course._id %>">Back to Course</a>
+        </div>
+    </div>
