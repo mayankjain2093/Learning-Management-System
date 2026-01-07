@@ -6,7 +6,7 @@ const Course = require('./models/course')
 const ejsMate = require('ejs-mate')
 const ExpressError = require('./utils/ExpressError')
 const Joi = require('joi');
-const courseSchema = require('./schemas.js')
+const {courseSchema,reviewSchema} = require('./schemas.js')
 
 const Review = require('./models/review')
 
@@ -39,10 +39,17 @@ app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 
 const validateCourse = (req, res, next) => {
-  
+  const result = courseSchema.validate(req.body)
+  if (result.error) {
+    const msg = result.error.details.map(e => e.message).join(',')
+    throw new ExpressError(msg, 400)
+  } else {
+    next()
+  }
+}
 
-  const result = courseSchema.validate(req.body || {})
-
+const validateReview = (req, res, next) => {
+  const result = reviewSchema.validate(req.body)
   if (result.error) {
     const msg = result.error.details.map(e => e.message).join(',')
     throw new ExpressError(msg, 400)
@@ -108,8 +115,13 @@ app.delete('/courses/:id', async (req, res) => {
   res.redirect('/courses')
 })
 
-app.post('/courses/:id/reviews', async(req,res) => {
+app.post('/courses/:id/reviews', validateReview, async(req,res) => {
   const course = await Course.findById(req.params.id)
+  const review = new Review(req.body.review)
+  course.reviews.push(review)
+  await review.save()
+  await course.save()
+  res.redirect(`/courses/${course._id}`)
 })
 
 app.all(/(.*)/, (req, res, next) => {
