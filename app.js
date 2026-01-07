@@ -7,7 +7,8 @@ const ejsMate = require('ejs-mate')
 const ExpressError = require('./utils/ExpressError')
 const Joi = require('joi');
 const courseSchema = require('./schemas.js')
-const e = require('express');
+
+const Review = require('./models/review')
 
 
 main().catch(err => console.log(err));
@@ -105,6 +106,10 @@ app.put('/courses/:id', validateCourse, async (req, res) => {
 app.delete('/courses/:id', async (req, res) => {
   await Course.findByIdAndDelete(req.params.id)
   res.redirect('/courses')
+})
+
+app.post('/courses/:id/reviews', async(req,res) => {
+  const course = await Course.findById(req.params.id)
 })
 
 app.all(/(.*)/, (req, res, next) => {

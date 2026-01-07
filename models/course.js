@@ -8,7 +8,11 @@ const CourseSchema = new Schema({
     platform: [String], 
     description: String,
     category: [String],
-    image: String
+    image: String,
+    reviews: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Review'
+    }]
 })
 
 module.exports = mongoose.model('Course', CourseSchema)
