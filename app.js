@@ -39,6 +39,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 
 const validateCourse = (req, res, next) => {
+  // console.log(req.body)
   const result = courseSchema.validate(req.body)
   if (result.error) {
     const msg = result.error.details.map(e => e.message).join(',')
@@ -94,7 +95,8 @@ app.post('/courses', validateCourse, async (req, res, next) => {
 })
 
 app.get('/courses/:id', async (req, res) => {
-  const course = await Course.findById(req.params.id)
+  const course = await Course.findById(req.params.id).populate('reviews')
+  // console.log(course)
   res.render('courses/show', { course })
 })
 
@@ -122,6 +124,13 @@ app.post('/courses/:id/reviews', validateReview, async(req,res) => {
   await review.save()
   await course.save()
   res.redirect(`/courses/${course._id}`)
+})
+
+app.delete('/courses/:id/reviews/:reviewId', async(req,res) => { 
+  const {id, reviewId} = req.params;
+  await Review.findByIdAndDelete(reviewId)
+  await Course.findByIdAndUpdate(id, {$pull: { reviews: reviewId }})
+  res.redirect(`/courses/${id}`)
 })
 
 app.all(/(.*)/, (req, res, next) => {
