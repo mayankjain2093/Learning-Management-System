@@ -7,6 +7,8 @@ const ejsMate = require('ejs-mate')
 const ExpressError = require('./utils/ExpressError')
 const Joi = require('joi');
 const {courseSchema,reviewSchema} = require('./schemas.js')
+const courseRoutes = require('./routes/courses')
+const reviewRoutes = require('./routes/reviews')
 
 const Review = require('./models/review')
 
@@ -38,31 +40,16 @@ app.set('views', path.join(__dirname, 'views'))
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 
-const validateCourse = (req, res, next) => {
-  // console.log(req.body)
-  const result = courseSchema.validate(req.body)
-  if (result.error) {
-    const msg = result.error.details.map(e => e.message).join(',')
-    throw new ExpressError(msg, 400)
-  } else {
-    next()
-  }
-}
 
-const validateReview = (req, res, next) => {
-  const result = reviewSchema.validate(req.body)
-  if (result.error) {
-    const msg = result.error.details.map(e => e.message).join(',')
-    throw new ExpressError(msg, 400)
-  } else {
-    next()
-  }
-}
+
+
 
 app.get('/', (req, res) => {
   // res.send('HELLO FROM LEARNING MANAGEMENT SYSTEM')
   res.render('home')
 })
+
+app.use('/courses', courseRoutes)
 
 // app.get('/makecourse',async (req,res) => {
 //     const courseTest = new Course({title: 'Machine Learning', price: 250, instructor: 'Andrew NG',
@@ -71,67 +58,8 @@ app.get('/', (req, res) => {
 //     res.send(courseTest)
 // })
 
-app.get('/courses', async (req, res) => {
-  const courses = await Course.find({})
-  res.render('courses/index', { courses })
-})
+app.use('/courses/:id/reviews', reviewRoutes)
 
-app.get('/courses/new', (req, res) => {
-  res.render('courses/new')
-})
-
-app.post('/courses', validateCourse, async (req, res, next) => {
-  if (req.body.course.platform) {
-    req.body.course.platform =
-      req.body.course.platform.filter(p => p.trim() !== "")
-  }
-  if (req.body.course.category) {
-    req.body.course.category =
-      req.body.course.category.filter(p => p.trim() !== "")
-  }
-  const course = new Course(req.body.course)
-  await course.save()
-  res.redirect(`/courses/${course._id}`)
-})
-
-app.get('/courses/:id', async (req, res) => {
-  const course = await Course.findById(req.params.id).populate('reviews')
-  // console.log(course)
-  res.render('courses/show', { course })
-})
-
-app.get('/courses/:id/edit', async (req, res) => {
-  const course = await Course.findById(req.params.id)
-  res.render('courses/edit', { course })
-})
-
-app.put('/courses/:id', validateCourse, async (req, res) => {
-  // res.send('It worked!')
-  const { id } = req.params;
-  const course = await Course.findByIdAndUpdate(id, req.body.course, { runValidators: true, new: true })
-  res.redirect(`/courses/${course._id}`)
-})
-
-app.delete('/courses/:id', async (req, res) => {
-  await Course.findByIdAndDelete(req.params.id)
-  res.redirect('/courses')
-})
-
-app.post('/courses/:id/reviews', validateReview, async(req,res) => {
-  const course = await Course.findById(req.params.id)
-  const review = new Review(req.body.review)
-  course.reviews.push(review)
-  await review.save()
-  await course.save()
-  res.redirect(`/courses/${course._id}`)
-})
-
-app.delete('/courses/:id/reviews/:reviewId', async(req,res) => { 
-  const {id, reviewId} = req.params;
-  await Review.findByIdAndDelete(reviewId)
-  await Course.findByIdAndUpdate(id, {$pull: { reviews: reviewId }})
-  res.redirect(`/courses/${id}`)
-})
 
 app.all(/(.*)/, (req, res, next) => {
   next(new ExpressError('Page not found', 404))
