@@ -39,17 +39,26 @@ router.post('/', validateCourse, async (req, res, next) => {
   }
   const course = new Course(req.body.course)
   await course.save()
+  req.flash('success','Successfully added a new course!')
   res.redirect(`/courses/${course._id}`)
 })
 
 router.get('/:id', async (req, res) => {
   const course = await Course.findById(req.params.id).populate('reviews')
   // console.log(course)
+  if (!course){
+    req.flash('error', 'Cannot find that course!')
+    return res.redirect('/courses')
+  }
   res.render('courses/show', { course })
 })
 
 router.get('/:id/edit', async (req, res) => {
   const course = await Course.findById(req.params.id)
+  if (!course){
+    req.flash('error', 'Cannot find that course!')
+    return res.redirect('/courses')
+  }
   res.render('courses/edit', { course })
 })
 
@@ -57,6 +66,7 @@ router.put('/:id', validateCourse, async (req, res) => {
   // res.send('It worked!')
   const { id } = req.params;
   const course = await Course.findByIdAndUpdate(id, req.body.course, { runValidators: true, new: true })
+  req.flash('success','Successfully edited a course!')
   res.redirect(`/courses/${course._id}`)
 })
 
