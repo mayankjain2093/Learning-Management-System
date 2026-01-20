@@ -7,10 +7,16 @@ const ejsMate = require('ejs-mate')
 const ExpressError = require('./utils/ExpressError')
 const Joi = require('joi');
 const {courseSchema,reviewSchema} = require('./schemas.js')
-const courseRoutes = require('./routes/courses')
-const reviewRoutes = require('./routes/reviews')
 const session = require('express-session')
 const flash = require('connect-flash')
+const  passport = require('passport')
+const LocalStrategy = require('passport-local')
+const User = require('./models/user')
+
+const userRoutes = require('./routes/users')
+const courseRoutes = require('./routes/courses')
+const reviewRoutes = require('./routes/reviews')
+
 
 const Review = require('./models/review')
 
@@ -57,26 +63,32 @@ const sessionConfig = {
 app.use(session(sessionConfig))
 app.use(flash())
 
+app.use(passport.initialize())
+app.use(passport.session())
+passport.use(new LocalStrategy(User.authenticate()))
+
+passport.serializeUser(User.serializeUser())
+passport.deserializeUser(User.deserializeUser())
+
 app.use((req,res,next) => {
   res.locals.success = req.flash('success')
   res.locals.error = req.flash('error')
   next()
 })
 
+// app.use('/fakeuser', async (req,res) => {
+//   const user = new User({email: 'rs@gmail.com', username: 'Ram Santran'})
+//   const newUser = await User.register(user, 'testing')
+//   res.send(newUser)
+// })
+
 app.get('/', (req, res) => {
   // res.send('HELLO FROM LEARNING MANAGEMENT SYSTEM')
   res.render('home')
 })
 
+app.use('/', userRoutes)
 app.use('/courses', courseRoutes)
-
-// app.get('/makecourse',async (req,res) => {
-//     const courseTest = new Course({title: 'Machine Learning', price: 250, instructor: 'Andrew NG',
-//          platform: ['Coursera', 'Standford Online'], description: 'This course teaches fundamental of Machine Learning', category: ['Science and Technology', 'Mathematics']})
-//     await courseTest.save()
-//     res.send(courseTest)
-// })
-
 app.use('/courses/:id/reviews', reviewRoutes)
 
 
