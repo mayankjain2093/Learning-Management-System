@@ -5,8 +5,12 @@ const Schema = mongoose.Schema
 const CourseSchema = new Schema({
     title: String,
     price: Number,
-    instructor: String,
+    // instructor: String,
     platform: [String], 
+    author: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
     description: String,
     category: [String],
     image: String,

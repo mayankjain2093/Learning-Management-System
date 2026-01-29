@@ -107,3 +107,6 @@ app.use((err, req, res, next) => {
 app.listen(3000, () => {
   console.log('APP SERVING ON PORT 3000')
 })
+
+
+module.exports = app;

@@ -4,7 +4,7 @@ const courseSchema = Joi.object({
     course: Joi.object({
       title: Joi.string().required(),
       price: Joi.number().required().min(0),
-      instructor: Joi.string().required(),
+      // instructor: Joi.string().required(),
       platform: Joi.array().items(Joi.string().allow('')).default([]),
       description: Joi.string().required(),
       category: Joi.array().items(Joi.string().allow('')).default([]),

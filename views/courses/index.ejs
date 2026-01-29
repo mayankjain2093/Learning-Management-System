@@ -15,7 +15,7 @@
                             <h5 class="card-title"><%= course.title %></h5>
                             <p class="card-text"><%= course.description %></p>
                             <p class="card-text">
-                                <small class="text-muted"><%= course.instructor %></small>
+                                <small class="text-muted"><%= course.author.username %></small>
                             </p>
                             <a href="/courses/<%= course._id %>" class="btn btn-primary">View <%= course.title %></a>
                         </div>
