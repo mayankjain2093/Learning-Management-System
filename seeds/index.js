@@ -32,7 +32,7 @@ db.once("open", () => {
 
 const seedDB = async () => {
     await Course.deleteMany({})
-    
+
     await Course.insertMany([
         { title: 'Google Data Analytics', price: 15, instructor: 'Shaun Dave', platform: ['Coursera'], description: 'Gain an immersive understanding of the practices and processes used by a junior or associate data analyst in their day-to-day job', category: ['Data Science', 'IT', 'Analytics', 'Business Development'] },
         { title: 'Social Psychology', price: 10, instructor: 'Scott Plous', platform: ['EDX'], description: 'Ever wonder why people do what they do? This course—which includes more than $1,000 of video and reading materials—offers some answers based on the latest research from social psychology. ', category: ['Health', 'Psychology'] },
@@ -54,16 +54,25 @@ const seedDB = async () => {
     const courses = await Course.find({});
 
     // for (let course of courses) {
-        
+
     //     await course.save();
     // }
 
     for (let course of courses) {
-        course.image = `https://picsum.photos/400?random=${Math.random()}`
+        course.images = [
+            {
+                url: 'https://res.cloudinary.com/dk1tlp170/image/upload/v1770049683/LMS/mlghjielq3lys1psg1pj.jpg',
+                filename: 'LMS/mlghjielq3lys1psg1pj'            
+            },
+            {
+                url: 'https://res.cloudinary.com/dk1tlp170/image/upload/v1770049683/LMS/dxctysfc21szfphdnkpt.jpg',
+                filename: 'LMS/dxctysfc21szfphdnkpt',
+            }
+        ]
         await course.save()
-}
+    }
 }
 
 seedDB().then(() => {
-  mongoose.connection.close()
+    mongoose.connection.close()
 }) 

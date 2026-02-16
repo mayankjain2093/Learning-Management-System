@@ -1,4 +1,5 @@
 const Course = require('../models/course')
+const {cloudinary} = require('../cloudinary')
 
 module.exports.index = async (req, res) => {
   const courses = await Course.find({}).populate('author')
@@ -19,8 +20,10 @@ module.exports.createCourse = async (req, res, next) => {
       req.body.course.category.filter(p => p.trim() !== "")
   }
   const course = new Course(req.body.course)
+  course.images = req.files.map(f => ({url: f.path, filename: f.filename}))
   course.author = req.user._id
   await course.save()
+  console.log(course)
   req.flash('success', 'Successfully added a new course!')
   res.redirect(`/courses/${course._id}`)
 }
@@ -52,6 +55,7 @@ module.exports.renderEditForm = async (req, res) => {
 module.exports.updateCourse =  async (req, res) => {
   // res.send('It worked!')
   const { id } = req.params;
+  // console.log(req.body)
   if (req.body.course.platform) {
     req.body.course.platform =
       req.body.course.platform.filter(p => p.trim() !== "")
@@ -61,6 +65,15 @@ module.exports.updateCourse =  async (req, res) => {
       req.body.course.category.filter(p => p.trim() !== "")
   }
   const cour = await Course.findByIdAndUpdate(id, req.body.course, { runValidators: true, new: true })
+  const imgs = req.files.map(f => ({url: f.path, filename: f.filename}))
+  cour.images.push(...imgs)
+  await cour.save()
+  if(req.body.deleteImages){
+    for (let filename of req.body.deleteImages){
+      await cloudinary.uploader.destroy(filename)
+    }
+    await cour.updateOne({ $pull: { images: { filename: { $in: req.body.deleteImages }}}})
+  }
   req.flash('success', 'Successfully edited a course!')
   res.redirect(`/courses/${cour._id}`)
 }

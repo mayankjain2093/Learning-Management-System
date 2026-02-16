@@ -63,7 +63,7 @@ const seedDB = async () => {
         await dummy_course.save()
         // await dummy_course.populate('author')
         // console.log(dummy_course)
-    }
+    }      
 
     // const user1 = new User({ username: 'Shaun Dave', email: 'shaun@gmail.com' })
     // await User.register(user1, 'testing')

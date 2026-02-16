@@ -8,8 +8,9 @@ const courseSchema = Joi.object({
       platform: Joi.array().items(Joi.string().allow('')).default([]),
       description: Joi.string().required(),
       category: Joi.array().items(Joi.string().allow('')).default([]),
-      image: Joi.string().required(),
-    }).required()
+      // image: Joi.string().required(),
+    }).required(),
+    deleteImages: Joi.array()
   }).required()
 
   const reviewSchema = Joi.object({
