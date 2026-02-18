@@ -1,5 +1,12 @@
 <% layout('/layouts/boilerplate.ejs') %>
-<link rel="stylesheet" href="/stylesheets/images.css" class="rel">
+    <script>
+        const existingPlatforms = [] 
+    </script>
+    <% script = `
+        <script src="/javascripts/platform/platformForm.js"></script>
+    ` %>
+
+    <link rel="stylesheet" href="/stylesheets/images.css" class="rel">
     <div class="row">
         <h1 class="text-center">New Course</h1>
         <div class="col-6 offset-3">
@@ -37,7 +44,7 @@
                     </div>
                     <div id="formFile"></div>
                 </div>
-                
+
                 <div class="mb-3">
                     <label class="form-label" for="price">Course Price</label>
                     <div class="input-group">
@@ -50,7 +57,7 @@
                     </div>
                 </div>
 
-                <div class="mb-3">
+                <!-- <div class="mb-3">
                     <label class="form-label">Platform</label>
                     <div class="mb-2">
                         <label for="platform-1" class="form-label">Platform 1</label>
@@ -64,27 +71,38 @@
                         <label for="platform-3" class="form-label">Platform 3</label>
                         <input type="text" class="form-control" id="platform-3" name="course[platform][]" placeholder="Enter Platform">
                     </div>
+                </div> -->
+
+                <div class="mb-3">
+                    <label class="form-label">Platforms</label>
+                    <div id="platform-wrapper"></div>
+                    <!-- Removed layout for platform-wrapper and moved it to public/javascripts/platformForm.ejs -->
+                    <button type="button" class="btn btn-outline-primary mt-2" id="add-platform">+ Add Platform</button>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Category</label>
                     <div class="mb-2">
                         <label for="category-1" class="form-label">Category 1</label>
-                        <input type="text" class="form-control" id="category-1" name="course[category][]" placeholder="Enter Category">
+                        <input type="text" class="form-control" id="category-1" name="course[category][]"
+                            placeholder="Enter Category">
                     </div>
                     <div class="mb-2">
                         <label for="category-2" class="form-label">Category 2</label>
-                        <input type="text" class="form-control" id="category-2" name="course[category][]" placeholder="Enter Category">
+                        <input type="text" class="form-control" id="category-2" name="course[category][]"
+                            placeholder="Enter Category">
                     </div>
                     <div class="mb-2">
                         <label for="category-3" class="form-label">Category 3</label>
-                        <input type="text" class="form-control" id="category-3" name="course[category][]" placeholder="Enter Category">
+                        <input type="text" class="form-control" id="category-3" name="course[category][]"
+                            placeholder="Enter Category">
                     </div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label" for="description">Course Description</label>
-                    <textarea class="form-control" type="text" name="course[description]" id="description" required></textarea>
+                    <textarea class="form-control" type="text" name="course[description]" id="description"
+                        required></textarea>
                     <div class="valid-feedback">
                         Looks good!
                     </div>
@@ -98,3 +116,5 @@
             <a href="/courses">All Courses</a>
         </div>
     </div>
+
+    
